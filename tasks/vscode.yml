@@ -1,0 +1,22 @@
+- name: Install vscode
+  get_url:
+    url: https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64
+    dest: /tmp/vscode.deb
+  tags:
+  - install
+  - vscode
+- name: Remove any previous vscodes
+  become: true
+  apt: 
+    name: vscode
+    state: absent
+  tags:
+  - install
+  - vscode
+- name: Install vscode .deb package
+  become: true
+  apt:
+    deb: /tmp/vscode.deb
+  tags:
+  - install
+  - vscode
