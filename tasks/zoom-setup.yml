@@ -1,0 +1,24 @@
+- name: Download Zoom
+  get_url:
+    url: https://zoom.us/client/5.15.5.5603/zoom_amd64.deb
+    dest: /tmp/zoom.deb
+  tags:
+    - install
+    - zoom
+
+- name: Remove Any previous zooms
+  become: true
+  apt:
+    name: zoom
+    state: absent
+  tags:
+    - install
+    - zoom
+
+- name: Install Slack .deb package
+  become: true
+  apt:
+    deb: /tmp/zoom.deb
+  tags:
+    - install
+    - zoom

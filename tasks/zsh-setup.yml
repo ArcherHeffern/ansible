@@ -4,22 +4,25 @@
     
 - name: Change shell to zsh
   shell: chsh -s $(which zsh)
+  become_user: samsep10l
   tags: *tags_for_zsh_tasks
 
 - name: Check that the somefile.conf exists
   stat:
-    path: /home/theprimeagen/.oh-my-zsh
+    path: /home/samsep10l/.oh-my-zsh
   register: oh_my_stats
   tags: *tags_for_zsh_tasks
 
+# Issue: This is checking root even though it says become_user: samsep10l
 - name: Oh-My-Zsh
-  shell: curl -L https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh > ~/.oh-my-installer && chmod +x ~/.oh-my-installer && ~/.oh-my-installer
+  shell: curl -L https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh > /home/samsep10l/.oh-my-installer && chmod +x /home/samsep10l/.oh-my-installer && /home/samsep10l/.oh-my-installer
   tags: *tags_for_zsh_tasks
+  become_user: samsep10l
   when: oh_my_stats.stat.exists == False
-  become_user: theprimeagen
 
 - name: Install zsh-autosuggestions
   ansible.builtin.git:
     repo: 'https://github.com/zsh-users/zsh-autosuggestions.git'
-    dest: "~/.oh-my-zsh/plugins/zsh-autosuggestions"
+    dest: "/home/samsep10l/.oh-my-zsh/plugins/zsh-autosuggestions"
   tags: *tags_for_zsh_tasks
+# If I am running into issues later, it might mean I need to unset the $ZSH variable with $ZSH unset, as ohmyzsh installer won't install if the variable is set
